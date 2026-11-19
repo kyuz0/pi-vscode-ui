@@ -177,6 +177,7 @@ const payloadSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("refreshModels"), sessionId: z.string().min(1).max(128) }),
   z.object({ type: z.literal("loadHistory"), sessionId: z.string().min(1).max(128) }),
   z.object({ type: z.literal("showSystemPrompt"), sessionId: z.string().min(1).max(128) }),
+  z.object({ type: z.literal("stopBackgroundWorkers"), sessionId: z.string().min(1).max(128) }),
   z.object({
     type: z.literal("inspectSubagent"),
     sessionId: z.string().min(1).max(128),
