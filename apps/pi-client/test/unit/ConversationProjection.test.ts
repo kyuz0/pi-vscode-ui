@@ -44,6 +44,26 @@ describe("ConversationProjection", () => {
     expect(projection.read().responseMetrics).toBeUndefined();
   });
 
+  it("shows Pi’s persisted AbortError as stopped and preserves other errors", () => {
+    const projection = new ConversationProjection();
+    const message = { role: "assistant", timestamp: 2, content: [], stopReason: "error", errorMessage: "This operation was aborted" };
+    projection.appendUserPrompt("Run worker", [], 1);
+    projection.applyEvent({ type: "agent_start" });
+    projection.applyEvent({ type: "message_end", message });
+    projection.applyEvent({ type: "agent_settled", aborted: true });
+    const expected = { type: "turn", status: "aborted", items: [{ type: "response", status: "aborted", blocks: [] }] };
+    expect(projection.read().items[0]).toMatchObject(expected);
+
+    const entry = { id: "a", parentId: "u", type: "message", timestamp: 2, message };
+    const user = userEntry("u", null, "Run worker", 1);
+    projection.replaceEntries([user, entry], []);
+    expect(projection.read().items[0]).toMatchObject(expected);
+    projection.replaceEntries([user, { ...entry, message: { ...message, errorMessage: "Provider unavailable" } }], []);
+    expect(projection.read().items[0]).toMatchObject({
+      status: "error", items: [{ type: "response", blocks: [{ type: "error", text: "Provider unavailable" }] }],
+    });
+  });
+
   it("uses request elapsed time when many output tokens arrive in one burst", () => {
     let now = 4_000;
     const wall = vi.spyOn(Date, "now").mockImplementation(() => now);
