@@ -30,6 +30,7 @@ import { ConversationProjection } from "../conversation/ConversationProjection.j
 import { diagnosticErrorText } from "../diagnostics/diagnosticRedaction.js";
 import type { RuntimeLogger } from "../diagnostics/RuntimeLogger.js";
 import { ExtensionUiCoordinator } from "../extension-ui/ExtensionUiCoordinator.js";
+import type { SubagentTarget, SubagentTranscriptView } from "../../shared/model/extensionUiModel.js";
 import { matchQuestionSelect } from "../extension-ui/matchQuestionSelect.js";
 import { QuestionToolExtensionBridge } from "../question-tool/QuestionToolExtensionBridge.js";
 import { commandName, normalizePiSlashPrompt } from "./normalizePiSlashPrompt.js";
@@ -182,6 +183,7 @@ export class SessionRuntime {
     this.#viewState.setStatus("stopping");
     this.#stopLiveStatsRefresh();
     this.#notifyChange();
+    this.#extensionUi?.cancelInspection();
     await this.#extensionUi?.cancelAll();
     await this.#connection?.stop();
     await Promise.all([
@@ -315,6 +317,14 @@ export class SessionRuntime {
     }
     if (!this.#sessionTreeBridge) throw new Error("System prompt viewing is unavailable in this Pi process.");
     await this.#sessionTreeBridge.showSystemPrompt(this.#requireApi());
+  }
+
+  async inspectSubagent(target: SubagentTarget): Promise<SubagentTranscriptView> {
+    const view = this.view;
+    if (!this.#extensionUi || (view.status !== "ready" && view.status !== "running") || view.isNavigatingTree) {
+      return { error: "This worker’s transcript is unavailable in the current Pi session." };
+    }
+    return this.#extensionUi.inspectSubagent(target);
   }
 
   async abort(): Promise<void> {
@@ -712,6 +722,7 @@ export class SessionRuntime {
       this.#notifyChange();
     });
     connection.onFailure((error) => {
+      this.#extensionUi?.cancelInspection();
       queueRecovery.dispose();
       this.#logger.error(`Session ${this.id} failed`, error);
       this.#stopLiveStatsRefresh();
