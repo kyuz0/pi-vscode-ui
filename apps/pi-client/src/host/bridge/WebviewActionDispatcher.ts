@@ -246,6 +246,9 @@ export class WebviewActionDispatcher {
         }
         return;
       }
+      case "updateQueuedPrompt":
+        await this.#registry.updateQueuedPrompt(message.sessionId, message.promptId, message.action);
+        return;
       case "abort":
         await this.#registry.abort(message.sessionId);
         return;
