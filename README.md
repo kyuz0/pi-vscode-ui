@@ -168,7 +168,7 @@ Use `@Selection`, `@CurrentFile`, or `@path/to/file` for workspace references. F
 
 Open **Session actions → View system prompt** in an idle Pi session to read its assembled system prompt. Close the viewer to return to the chat.
 
-The chat footer shows a running output token count and estimated tokens per second. Counts marked `≈` are estimated from streamed content and are replaced by the provider's count when it arrives.
+The chat footer shows a running output token count and an average rate over the model request. Counts marked `≈` are estimated from streamed content and are replaced by the provider's count when it arrives.
 
 Run multiple independent Pi sessions, switch providers and models, resume existing sessions, and select only the thinking levels exposed by the active model's Pi metadata.
 
