@@ -46,6 +46,7 @@ FrostPi keeps Pi's functional workflows available from the GUI:
 - Switch provider/model and select only thinking levels supported by the active model's Pi metadata.
 - Read Pi's assembled system prompt from **Session actions → View system prompt**.
 - Resume sessions and use Pi's native `/compact` and session-summary behavior.
+- Queue messages while Pi runs, then edit or reorder them. Use **Steer** on a pending message to send it into the current run.
 - Render rich Markdown including Mermaid, compaction records, branch summaries, and Pi extension custom messages.
 - Display PNG, JPEG, WebP, GIF, AVIF, BMP, and SVG images in conversations; remote HTTPS images load only when clicked.
 - Review command output and tool details; open files and Git-base diffs in native VS Code editors.
