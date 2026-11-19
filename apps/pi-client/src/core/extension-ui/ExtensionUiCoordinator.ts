@@ -3,10 +3,12 @@ import type { PiRpcApi, RpcExtensionUiRequest, RpcExtensionUiResponse } from "@f
 
 import type { ExtensionStatusView, ExtensionWidgetView, PendingExtensionUiView, QuestionSelectView, SubagentTarget, SubagentTranscriptView } from "../../shared/model/extensionUiModel.js";
 import { projectExtensionWidget } from "./extensionWidgetLines.js";
+import { projectDeferredQuestionSelect } from "./matchQuestionSelect.js";
 import { sanitizeExtensionUiText } from "./sanitizeExtensionUiText.js";
 import { readSubagentTranscript, subagentInspector, subagentInspectWidget } from "./subagentTranscript.js";
 
 const DIALOG_METHODS = new Set(["select", "confirm", "input", "editor"]);
+const deferredQuestionHeading = /^Answer when ready \[([0-9a-f-]{36})\]\n/;
 
 export interface ExtensionUiEffects {
   onChange(): void;
@@ -51,13 +53,24 @@ export class ExtensionUiCoordinator {
   handle(request: RpcExtensionUiRequest, questionSelect?: QuestionSelectView): void {
     if (DIALOG_METHODS.has(request.method)) {
       const method = request.method as "select" | "confirm" | "input" | "editor";
+      const deferred = method === "select" || method === "input" ? deferredQuestionHeading.exec(request.title ?? "") : null;
+      const deferredQuestionId = deferred?.[1];
+      const title = deferred ? request.title?.slice(deferred[0].length) : request.title;
+      const question = deferred && method === "select" ? projectDeferredQuestionSelect(title, request.options) : questionSelect;
+      for (const [id, pending] of this.#pending) {
+        if (deferredQuestionId && pending.method !== "question" && pending.deferredQuestionId === deferredQuestionId) {
+          this.#pending.delete(id);
+          this.#clearTimeout(id);
+        }
+      }
       this.addPending({
         id: request.id,
         method,
-        title: request.title ? sanitizeExtensionUiText(request.title) : defaultTitle(method),
+        title: title ? sanitizeExtensionUiText(title) : defaultTitle(method),
         ...(request.message ? { message: sanitizeExtensionUiText(request.message) } : {}),
         ...(request.options ? { options: request.options } : {}),
-        ...(questionSelect ? { questionSelect } : {}),
+        ...(question ? { questionSelect: question } : {}),
+        ...(deferredQuestionId ? { deferredQuestionId } : {}),
         ...(request.placeholder ? { placeholder: request.placeholder } : {}),
         ...(request.prefill ? { prefill: request.prefill } : {}),
         receivedAt: Date.now(),
@@ -153,12 +166,17 @@ export class ExtensionUiCoordinator {
     await this.#api.sendExtensionUiResponse(requestId, response);
   }
 
-  async cancelAll(): Promise<void> {
-    const ids = [...this.#pending.keys()];
-    this.#pending.clear();
-    for (const id of ids) this.#clearTimeout(id);
+  async cancelAll(preserveDeferred = false): Promise<void> {
+    const cancelled: string[] = [];
+    for (const [id, request] of this.#pending) {
+      const deferred = request.method !== "question" && request.deferredQuestionId;
+      if (deferred && preserveDeferred) continue;
+      this.#pending.delete(id);
+      this.#clearTimeout(id);
+      if (!deferred) cancelled.push(id);
+    }
     this.#effects.onChange();
-    await Promise.allSettled(ids.map((id) => this.#api.sendExtensionUiResponse(id, { cancelled: true })));
+    await Promise.allSettled(cancelled.map((id) => this.#api.sendExtensionUiResponse(id, { cancelled: true })));
   }
 
   async inspectSubagent(target: SubagentTarget): Promise<SubagentTranscriptView> {
