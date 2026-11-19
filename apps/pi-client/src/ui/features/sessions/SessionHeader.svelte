@@ -111,7 +111,7 @@
   }
 
   function activeStatusLabel(): string {
-    if (active.pendingExtensionUi.length > 0) return "action required";
+    if (active.pendingExtensionUi.some(request => request.method === "question" || !request.deferredQuestionId)) return "action required";
     if (active.isForking) return "forking session";
     if (active.isNavigatingTree) return active.isSummarizingTree ? "summarizing branch" : "switching branch";
     if (active.isCompacting) return "compacting context";
