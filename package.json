@@ -8,7 +8,6 @@
   "scripts": {
     "build:vscode": "pnpm --dir apps/vscode build",
     "build:desktop": "pnpm --dir apps/desktop build",
-    "build:browser": "pnpm --dir apps/desktop build:browser",
     "clean": "node scripts/clean.mjs",
     "version:set": "node scripts/version.mjs set",
     "typecheck": "node scripts/quality.mjs typecheck",

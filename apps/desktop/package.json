@@ -4,7 +4,6 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "build:browser": "node browser/build.mjs",
     "clean": "node ../../scripts/clean-dir.mjs dist coverage",
     "start": "node scripts/start.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit && svelte-check --tsconfig ./tsconfig.renderer.json",
