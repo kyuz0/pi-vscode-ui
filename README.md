@@ -25,8 +25,6 @@ You can also download `*.vsix` file in Github release and install mannually, if 
 
 There is also an [experimental Windows Desktop app](#desktop-experimental-windows) for using FrostPi outside VS Code.
 
-In Pi Sandbox Factory, choose **FrostPi in browser** to chat and browse workspace files. The standalone client previews text, Markdown and images. The sandbox owner can enable uploads and downloads separately.
-
 ## Why FrostPi
 
 If you already use Pi and have built your own workflow around it, getting a GUI shouldn't mean adopting another one.

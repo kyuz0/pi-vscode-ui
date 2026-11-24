@@ -1,11 +1,5 @@
 # Desktop contracts
 
-## Standalone browser
-
-`pnpm build:browser` builds the Linux sandbox client from `apps/desktop/browser` into `apps/desktop/dist/web`. The browser entry owns the file viewer and transfer controls. The VS Code extension and native desktop app use their own entries.
-
-The launcher starts `server.cjs` with a private Unix socket, the browser authority, the session link, the working directory and the upload and download settings. The server checks the host and request origin, confines file access to `/workspace`, and blocks remote images in previews. Uploads and downloads each require permission from the launcher.
-
 ## Session and presentation
 
 Store Session-to-Project associations in Desktop navigation metadata. Reassigning a Session to another Project must not change that Session's id or cwd. After Project selection completes, `SessionRegistry.activeSessionId` must name one of that Project's Sessions or be null. Filtering the visible Session list cannot substitute for updating this Registry selection.
