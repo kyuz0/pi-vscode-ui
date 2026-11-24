@@ -6,7 +6,7 @@ import { root } from "./lib.mjs";
 const budgets = new Map([
   ["apps/vscode/dist/extension/extension.cjs", 1_200_000],
   ["apps/vscode/dist/webview/webview.js", 861_200], // Includes the scheduled task list and delivery marker
-  ["apps/vscode/dist/webview/webview.css", 166_800], // Includes the scheduled task list and delivery marker
+  ["apps/vscode/dist/webview/webview.css", 166_900], // Includes scheduled tasks and the VS Code width override
 ]);
 let failed = false;
 for (const [relative, budget] of budgets) {
