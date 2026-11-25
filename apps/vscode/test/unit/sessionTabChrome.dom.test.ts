@@ -27,7 +27,7 @@ function session(overrides: Partial<SessionViewModel> = {}): SessionViewModel {
     id: "session", title: "Parser work", cwd: "/workspace", status: "running", isEphemeral: false,
     isStreaming: true, isCompacting: false, isForking: false, historyStatus: "loaded",
     model: null, thinkingLevel: "off", availableModels: [], scopedModelIds: [], commands: [],
-    attachmentLimits: { maxImageBytes: 1, maxImages: 1 }, collapseTurnTrace: true, collapseRunningTurnTrace: true,
+    attachmentLimits: { maxImageBytes: 1, maxImages: 1 }, collapseTurnTrace: true, collapseRunningTurnTrace: true, composerSendOnEnter: true,
     composerStreamingBehavior: "steer", networkProxy: { mode: "inherit", label: "Inherited", restartRequired: false },
     questionTool: { configuredEnabled: false, appliedEnabled: false, restartRequired: false },
     conversationItems: [], queuedSteers: [], queuedFollowUps: [], queuedPromptRecovery: { state: "unavailable" } as never,
@@ -44,6 +44,17 @@ function posted(): unknown[] {
 }
 
 describe("Session Tab header", () => {
+  it.each([SessionHeader, PanelSessionHeader])("keeps deferred questions from blocking the running status", (Component) => {
+    const active = session({ pendingExtensionUi: [{
+      id: "deferred", method: "select", title: "Choose a destination", deferredQuestionId: "question", receivedAt: 0,
+    }] });
+    const view = Component === SessionHeader
+      ? render(SessionHeader, { sessions: [], active })
+      : render(PanelSessionHeader, { session: active });
+    expect(view.container.textContent).toContain("· running");
+    expect(view.container.textContent).not.toContain("action required");
+  });
+
   it("renames the pinned Session while its turn is running", async () => {
     const view = render(PanelSessionHeader, { session: session() });
     expect(view.container.textContent).toContain("· running");

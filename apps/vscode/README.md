@@ -41,6 +41,7 @@ FrostPi keeps Pi's functional workflows available from the GUI:
 
 - Stream ordered reasoning, tool activity, command output, errors, and final responses.
 - Paste PNG, JPEG, or WebP images directly into prompts.
+- File references from editor menus or `@` completion appear as tags. Hover for the full path, click the filename to edit it, or use × to remove it. The prompt keeps the complete path and line range without inserting file contents; ordinary backticked code stays plain.
 - Use `/` completion for Pi extension commands, prompt templates, skills, and FrostPi-local actions.
 - Use `@Selection`, `@CurrentFile`, and workspace paths as explicit prompt references.
 - Switch provider/model and select only thinking levels supported by the active model's Pi metadata.
@@ -48,7 +49,7 @@ FrostPi keeps Pi's functional workflows available from the GUI:
 - Resume sessions and use Pi's native `/compact` and session-summary behavior.
 - Queue messages while Pi runs, then edit or reorder them. Use **Steer** on a pending message to send it into the current run.
 - Render rich Markdown including Mermaid, compaction records, branch summaries, and Pi extension custom messages.
-- Display PNG, JPEG, WebP, GIF, AVIF, BMP, and SVG images in conversations; remote HTTPS images load only when clicked.
+- Display PNG, JPEG, WebP, GIF, AVIF, BMP, and SVG image data in conversations. File and remote-image references remain placeholders; FrostPi does not fetch them from chat text.
 - Review command output and tool details; open files and Git-base diffs in native VS Code editors.
 - Inspect context, token categories, tool/message counts, and estimated session cost.
 - See the running output token count and average rate over the model request. The footer uses `≈` for estimated counts until Pi has a reported count.

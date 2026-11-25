@@ -123,7 +123,7 @@ Agent output stays readable instead of collapsing into plain text:
 - **Link targets** — hover over a Markdown link for one second, or focus it with the keyboard, to preview its file path or full external URL before opening it.
 - **Mermaid** diagrams — incomplete fences remain plain source while streaming; complete ones render as diagrams.
 - **Math** via KaTeX — inline `$...$` and block `$$...$$` display formulas.
-- **Embedded images** — PNG, JPEG, WebP, GIF, AVIF, BMP, and SVG with captions, the shared Lightbox, lazy local loading, and click-to-load for remote HTTPS images.
+- **Embedded images** — PNG, JPEG, WebP, GIF, AVIF, BMP, and SVG data with captions and the shared Lightbox. File and remote-image references remain placeholders; FrostPi does not fetch them from chat text.
 - **Diffs** — `diff`/`patch` fences and tool diffs use VS Code diff colors, down to word-level intra-line additions and deletions.
 
 <p align="center">
@@ -159,6 +159,8 @@ The executable may be the `pi` command, an absolute native executable, or Pi's c
 ### Prompt and workspace context
 
 Paste PNG, JPEG, or WebP images directly into the composer.
+
+File references inserted from the editor menu or `@` completion appear as tags. Hover for the full path, click the filename to edit it, or use × to remove it. FrostPi sends the complete path and selected line range, without inserting file contents. Ordinary backticked code stays plain.
 
 Use `/` completion for Pi extension commands, prompt templates, skills, and FrostPi-local actions.
 
