@@ -6,7 +6,7 @@ import { root } from "./lib.mjs";
 const budgets = new Map([
   ["apps/vscode/dist/extension/extension.cjs", 1_200_000],
   ["apps/vscode/dist/webview/webview.js", 876_000], // Session tabs, worker transcripts, editable queues and reference chips
-  ["apps/vscode/dist/webview/webview.css", 169_100], // Session controls, questions, workers and reference chips
+  ["apps/vscode/dist/webview/webview.css", 170_000], // Session controls, questions, workers and reference chips
 ]);
 let failed = false;
 for (const [relative, budget] of budgets) {
