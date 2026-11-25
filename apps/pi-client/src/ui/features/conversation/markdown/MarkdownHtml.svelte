@@ -104,7 +104,7 @@
   import { mountMarkdownImages } from "./mountMarkdownImages";
   import { activateTranscriptLink } from "./activateTranscriptLink";
 
-  let { content }: { content: string } = $props();
+  let { content, promptReferences = false }: { content: string; promptReferences?: boolean } = $props();
 
   let container: HTMLDivElement | undefined = $state();
 
@@ -124,7 +124,7 @@
 
   const html = $derived.by(() => {
     void katexGeneration;
-    return renderMarkdownHtml(content);
+    return renderMarkdownHtml(content, promptReferences);
   });
 
   $effect(() => {
