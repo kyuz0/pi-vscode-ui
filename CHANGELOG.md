@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Render editor-inserted file references as editable tags in the composer and sent messages. The model receives the complete `ref:` marker, path and selected line range; file contents are not inserted.
+- Enable `frostpi.composer.sendOnEnter` to send prompts with Enter. It is off by default; Shift+Enter inserts a newline, and Ctrl/Cmd+Enter sends in either mode.
 
 ### Fixed
 
